@@ -5,11 +5,12 @@ import ControllerTypes from "./src/controllers/inversifyContainer/containerTypes
 import 'reflect-metadata'; 
 import { createConnection } from "typeorm";
 
+
 var express = require('express');
 var path = require('path');
-
+var cors =require('cors')
 var app = express();
-
+app.use(cors())
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
