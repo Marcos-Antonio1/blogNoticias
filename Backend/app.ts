@@ -3,6 +3,8 @@ import { IndexController } from "./src/controllers/IndexController";
 import ControllerContainer from "./src/controllers/inversifyContainer/ControllerContainer";
 import ControllerTypes from "./src/controllers/inversifyContainer/containerTypes";
 import 'reflect-metadata'; 
+require("dotenv-safe").config();
+const jwt = require('jsonwebtoken');
 import { createConnection } from "typeorm";
 
 

@@ -4,6 +4,8 @@ import { Connection } from "typeorm";
 import { NoticiasModel } from "../../models/NoticiasModel";
 import { UserModel } from "../../models/UserModel";
 import { AbstractController } from "./AbstractController";
+require("dotenv-safe").config();
+const jwt = require('jsonwebtoken');
 
 export class UserController extends AbstractController{
     protected prefix:string='/user';
@@ -37,11 +39,19 @@ export class UserController extends AbstractController{
         return async(req:Request,res:Response,next:NextFunction)=>{
             let User:UserModel|undefined= await UserModel.findOne({login:req.body.login})
             console.log(User)
-            if(User?.senha == req.body.senha){
-                res.send(`usuário logado seu id é ${User?.idUser}`)
-            }else{
-                res.send(`usuário inesxistente`)
-            }
+           if(User){
+               if(User.senha === req.body.senha){
+                   let id= User.idUser;
+                   const token = jwt.sign({ id}, process.env.SECRET, {
+                       expiresIn: 3000 // expires in 5min
+                     });
+                      res.status(200).send({ auth: true, token: token ,usuario:{User} });
+               }else{
+                   res.send({msg:"senha inválida"})
+               }
+           }else{
+               res.send({msg:"Email não cadastrado"})
+           }
             
         }
     } 
@@ -81,7 +91,7 @@ export class UserController extends AbstractController{
         this.forRoute('').get(this.hello())
         this.forRoute('/create').post(this.create())
         this.forRoute('/list').get(this.listMynews())
-        /* this.forRoute('/login').post(this.login()) */
+         this.forRoute('/login').post(this.login())
         this.forRoute('/create-news').post(this.createdNews())
         this.forRoute('/update-news/:id').put(this.updateNews())
 
