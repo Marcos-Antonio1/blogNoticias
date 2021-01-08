@@ -4,8 +4,7 @@ import { Connection } from "typeorm";
 import { NoticiasModel } from "../../models/NoticiasModel";
 import { UserModel } from "../../models/UserModel";
 import { AbstractController } from "./AbstractController";
-require("dotenv-safe").config();
-const jwt = require('jsonwebtoken');
+
 
 export class UserController extends AbstractController{
     protected prefix:string='/user';
@@ -18,11 +17,15 @@ export class UserController extends AbstractController{
     create(){
         return async (req:Request,res:Response,next:NextFunction)=>{
             let User:UserModel= new UserModel();
-            User.nome=req.body.nome;
-            User.login=req.body.login;
-            User.senha=req.body.senha;
-            await User.save()
-            res.send({msg:'usuário criado com sucesso'})
+            if(UserModel.findOne({login:req.body.login})){
+                res.send({msg:"Login de já cadastrado"})
+            }else{
+                User.nome=req.body.nome;
+                User.login=req.body.login;
+                User.senha=req.body.senha;
+                await User.save()
+                res.send({msg:'usuário criado com sucesso'})
+            }    
         }
     }
     listMynews(){
@@ -35,26 +38,6 @@ export class UserController extends AbstractController{
             
         }
     }
-     login(){
-        return async(req:Request,res:Response,next:NextFunction)=>{
-            let User:UserModel|undefined= await UserModel.findOne({login:req.body.login})
-            console.log(User)
-           if(User){
-               if(User.senha === req.body.senha){
-                   let id= User.idUser;
-                   const token = jwt.sign({ id}, process.env.SECRET, {
-                       expiresIn: 3000 // expires in 5min
-                     });
-                      res.status(200).send({ auth: true, token: token ,usuario:{User} });
-               }else{
-                   res.send({msg:"senha inválida"})
-               }
-           }else{
-               res.send({msg:"Email não cadastrado"})
-           }
-            
-        }
-    } 
     createdNews(){
         return async (req:Request,res:Response,next:NextFunction) =>{
             let noticia:NoticiasModel= new NoticiasModel()
@@ -87,13 +70,19 @@ export class UserController extends AbstractController{
             }
         }
     }
+    logout(){
+        return async (req:Request,res:Response,next:NextFunction) =>{
+            res.send({auth:false,token:null})
+        }
+    }
     registerRoutes(){
         this.forRoute('').get(this.hello())
         this.forRoute('/create').post(this.create())
         this.forRoute('/list').get(this.listMynews())
-         this.forRoute('/login').post(this.login())
         this.forRoute('/create-news').post(this.createdNews())
         this.forRoute('/update-news/:id').put(this.updateNews())
+        this.forRoute('/logout').get(this.logout())
+        
 
     }
 }
