@@ -17,7 +17,8 @@ export class UserController extends AbstractController{
     create(){
         return async (req:Request,res:Response,next:NextFunction)=>{
             let User:UserModel= new UserModel();
-            if(UserModel.findOne({login:req.body.login})){
+            console.log('to qui')
+            if( await UserModel.findOne({login:req.body.login})){
                 res.send({msg:"Login de já cadastrado"})
             }else{
                 User.nome=req.body.nome;
@@ -31,10 +32,25 @@ export class UserController extends AbstractController{
     listMynews(){
         return async (req:Request,res:Response,next:NextFunction)=>{
             let user:UserModel|undefined= new UserModel()
-            user= await UserModel.findOne({idUser:req.body.id})
+            let id= parseInt(req.params.id)
+            user= await UserModel.findOne({idUser:id})
             if(user){
                 res.status(200).send(user.noticias)
             }
+            
+        }
+    }
+    deleteNews(){
+        return async (req:Request,res:Response,next:NextFunction)=>{
+            let news:NoticiasModel|undefined= new NoticiasModel()
+            let id= parseInt( req.params.id)
+            news= await NoticiasModel.findOne({idNews :id})
+            console.log(req)
+            if(news){
+                news.remove()
+                res.send({msg:'noticia excluida com sucesso'})
+            }
+            
             
         }
     }
@@ -78,11 +94,11 @@ export class UserController extends AbstractController{
     registerRoutes(){
         this.forRoute('').get(this.hello())
         this.forRoute('/create').post(this.create())
-        this.forRoute('/list').get(this.listMynews())
+        this.forRoute('/list/:id').get(this.listMynews())
         this.forRoute('/create-news').post(this.createdNews())
         this.forRoute('/update-news/:id').put(this.updateNews())
         this.forRoute('/logout').get(this.logout())
-        
+        this.forRoute('/delete/:id').delete(this.deleteNews())       
 
     }
 }

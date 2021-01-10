@@ -20,10 +20,13 @@ export class IndexController extends AbstractController{
     }
     searchNews(){
         return  async (req:Request,res:Response,next:NextFunction)=>{
+            console.log(req)
             var data = await getRepository(NoticiasModel)
             .createQueryBuilder("noticias")
             .where("noticias.titulo like :name", { name:`%${req.body.name}%` })
             .getMany();
+            console.log('to aqui')
+            console.log(data)
             res.send(data)
         }
     }
@@ -32,6 +35,7 @@ export class IndexController extends AbstractController{
             var news:NoticiasModel| undefined= new NoticiasModel()
             let id= parseInt(req.params.id)
             news =  await NoticiasModel.findOne({idNews:id})
+            console.log(req)
             if(news?.gostei !=undefined ){
                 news.gostei= news.gostei+1;
                 news.save()
@@ -51,7 +55,7 @@ export class IndexController extends AbstractController{
     registerRoutes(){
         this.forRoute('').get(this.hello())
         this.forRoute('list-all').get(this.listNews())
-        this.forRoute('search').get(this.searchNews())
+        this.forRoute('search').post(this.searchNews())
         this.forRoute('liked/:id').get(this.liked())
         this.forRoute('detail-news/:id').get(this.detailNews())
     }

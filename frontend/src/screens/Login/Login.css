@@ -1,0 +1,20 @@
+.container{
+    background-color: blue;
+    height: 100vh;
+    width: 100vw; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #4ABDAC;
+}
+.Form-login{
+    background-color:#FC4A14;
+    height: 400px; 
+    width: 300px;
+    border-radius: 20px;
+}
+.texto-login{
+    margin-left: 17%;
+    font-size:25px;
+    margin-top: 30%;
+}

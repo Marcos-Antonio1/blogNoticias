@@ -14,7 +14,7 @@ export class LoginController extends AbstractController{
         return async(req:Request,res:Response,next:NextFunction)=>{
             let User:UserModel|undefined= await UserModel.findOne({login:req.body.login})
             console.log(User)
-           if(User){
+           if(User){    
                if(User.senha === req.body.senha){
                    let id= User.idUser;
                    const token = jwt.sign({ id}, process.env.SECRET, {
