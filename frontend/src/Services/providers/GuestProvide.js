@@ -30,7 +30,6 @@ var Gostei = async (id)=>{
 }
 
 var Login = async(data)=>{
-     console.log('cheguei 2 ')
     try{ 
         let r = await Api.post('/login',data);
         if(r.data.auth){

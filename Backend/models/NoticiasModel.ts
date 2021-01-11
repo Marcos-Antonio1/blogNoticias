@@ -17,6 +17,9 @@ export class NoticiasModel extends BaseEntity{
     gostei?:number
     @ManyToOne(()=>UserModel,user=> user.noticias)
     user?:UserModel;
+
+
+    
      static async getAll(nome:string){
          return await getRepository(NoticiasModel)
             .createQueryBuilder("noticias")

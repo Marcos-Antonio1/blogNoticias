@@ -39,20 +39,12 @@ export class IndexController extends AbstractController{
             }
         }
     }
-    detailNews(){
-        return  async (req:Request,res:Response,next:NextFunction)=>{
-            var news:NoticiasModel| undefined= new NoticiasModel()
-            let id= parseInt(req.params.id)
-            news =  await NoticiasModel.findOne({idNews:id})
-            res.send(news)
-        }
-    }
+   
 
     registerRoutes(){
         this.forRoute('').get(this.hello())
         this.forRoute('list-all').get(this.listNews())
         this.forRoute('search').post(this.searchNews())
         this.forRoute('liked/:id').get(this.liked())
-        this.forRoute('detail-news/:id').get(this.detailNews())
     }
 }
