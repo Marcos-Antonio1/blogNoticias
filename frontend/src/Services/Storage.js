@@ -14,6 +14,7 @@ export const _retrieveData = (type) => {
     }
 }
 
+
 export const getUser = () => {
     const usuario = _retrieveData("user");
     return usuario;

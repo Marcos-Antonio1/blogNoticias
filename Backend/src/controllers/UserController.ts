@@ -33,6 +33,7 @@ export class UserController extends AbstractController{
         return async (req:Request,res:Response,next:NextFunction)=>{
             let user:UserModel|undefined= new UserModel()
             let id= parseInt(req.params.id)
+            console.log(req)
             user= await UserModel.findOne({idUser:id})
             if(user){
                 res.status(200).send(user.noticias)

@@ -21,11 +21,7 @@ export class IndexController extends AbstractController{
     searchNews(){
         return  async (req:Request,res:Response,next:NextFunction)=>{
             console.log(req)
-            var data = await getRepository(NoticiasModel)
-            .createQueryBuilder("noticias")
-            .where("noticias.titulo like :name", { name:`%${req.body.name}%` })
-            .getMany();
-            console.log('to aqui')
+            var data = await NoticiasModel.getAll(req.body.name)
             console.log(data)
             res.send(data)
         }

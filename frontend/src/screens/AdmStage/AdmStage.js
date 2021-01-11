@@ -3,7 +3,7 @@ import { Button, Layout } from 'antd';
 import { Link } from 'react-router-dom';
 import { Menu } from 'antd';
 import './Adm.css'
-import { getUser } from '../../Services/Storage';
+import { getUser, _storeData } from '../../Services/Storage';
 import UserProvider from '../../Services/providers/UserProvider';
 import CardList from './cardList';
 import {useLocation, useHistory} from 'react-router-dom';
@@ -13,19 +13,11 @@ const { Header, Footer, Sider, Content } = Layout;
 const AdmStage= ()=>{
     const history=useHistory()
     const location= useLocation()
-    const[user,setUser]=React.useState()
     const [news,setNews]=React.useState()
     const [erro,setErr]=React.useState()
     React.useEffect(() => {
-        console.log(location)
-        userSet()
-
         dataNews() 
-      }, [user]); 
-      async function userSet(){
-         /* await setUser(location.state.User) */
-         await setUser(getUser().user)
-      }
+      }, []); 
  return(
     <Layout>
     <Header>
@@ -56,6 +48,9 @@ const AdmStage= ()=>{
 {/*     <Button type="primary" block>
       Atualizar dados
     </Button> */}
+    <Button onClick={logout} type="primary" danger block>
+      Sair
+    </Button>
     <hr></hr>
       </Sider>
         </Menu>
@@ -63,18 +58,35 @@ const AdmStage= ()=>{
   </Layout> 
  )
  async function dataNews(){
-    let myNews= await UserProvider.listMyNews(1)
+   try{
+     let user = getUser()
+     console.log(user)
+    let myNews= await UserProvider.listMyNews(user.User.idUser)
     if(myNews){
         setNews(myNews)
     }else{
         setErr('nenhuma noticia cadastrada')
     }
+  }catch(err){
+         setErr('houve um erro ao cadastrar as noticias ')
+  }
  }
  function createNews(){
    history.push('/registerNews',{userid:1})
  }
  function createAdmin(){
   history.push('/creatAdmin')
+}
+ function  logout(){
+  try{
+      _storeData("user", null);
+      _storeData("token", null);
+      _storeData("auth", null);
+      history.push('/login')
+      
+  } catch(error){
+      throw error;
+  }
 }
 }
 

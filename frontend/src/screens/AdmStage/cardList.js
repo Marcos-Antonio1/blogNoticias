@@ -26,8 +26,8 @@ const CardList= (props)=>{
       ):(
         <div  className="site-card-border-less-wrapper" style={{backgroundColor:'#f0f2f5',deletenews}}>
          <Card title={props.news.titulo}  style={{ width: '100%' }}>
-          <img src={props.news.imagem} alt='imagem'></img>
-          <p>{props.news.noticia}</p>
+          <img src={props.news.imagem} style={{height:200 ,width:400}} alt='imagem'></img>
+          <h2>{props.news.noticia}</h2>
           <p>{formatData(props.news.createdAt)}</p>
           {like ? (
              <Fragment>

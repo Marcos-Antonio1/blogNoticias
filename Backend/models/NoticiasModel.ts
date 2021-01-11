@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, BaseEntity} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, BaseEntity, getRepository} from "typeorm";
 import {UserModel} from './UserModel';
 @Entity()
 export class NoticiasModel extends BaseEntity{
@@ -17,5 +17,10 @@ export class NoticiasModel extends BaseEntity{
     gostei?:number
     @ManyToOne(()=>UserModel,user=> user.noticias)
     user?:UserModel;
-
+     static async getAll(nome:string){
+         return await getRepository(NoticiasModel)
+            .createQueryBuilder("noticias")
+            .where("noticias.titulo like :name", { name:`%${nome}%` })
+            .getMany();
+    }
 }
